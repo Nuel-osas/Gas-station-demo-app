@@ -7,7 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 const API_KEY = process.env.REACT_APP_IOTA_API_KEY || 'YOUR_IOTA_API_KEY';
-const GAS_STATION_URL = process.env.NODE_ENV === 'development' ? '' : 'https://gas.movevm.tools';
+// Use proxy endpoint for production CORS handling, direct proxy for development
+const GAS_STATION_URL = process.env.NODE_ENV === 'development' ? '' : '/api';
 
 function IotaWalletApp() {
   const currentAccount = useCurrentAccount();
@@ -73,7 +74,8 @@ function IotaWalletApp() {
       const rawTxBytesHex = toHEX(txBytes);
       
       // Send to gas station for sponsorship
-      const response = await fetch(`${GAS_STATION_URL}/api/iota/sponsor`, {
+      // Send to gas station for sponsorship (via proxy in production)
+      const response = await fetch(`${GAS_STATION_URL}/iota/sponsor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,11 +136,6 @@ function IotaWalletApp() {
               });
               
               setTxDigest(result.digest);
-              
-              // Refresh the page after a delay to update balances
-              setTimeout(() => {
-                window.location.reload();
-              }, 5000);
               
             } catch (execError: any) {
               console.error('Execution error:', execError);
@@ -215,7 +212,8 @@ function IotaWalletApp() {
       const rawTxBytesHex = toHEX(txBytes);
       
       // Send to gas station for sponsorship
-      const response = await fetch(`${GAS_STATION_URL}/api/iota/sponsor`, {
+      // Send to gas station for sponsorship (via proxy in production)
+      const response = await fetch(`${GAS_STATION_URL}/iota/sponsor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -282,11 +280,6 @@ function IotaWalletApp() {
               setNftDescription('');
               setNftUrl('');
               setShowNftForm(false);
-              
-              // Refresh the page after a delay to update balances
-              setTimeout(() => {
-                window.location.reload();
-              }, 5000);
               
             } catch (execError: any) {
               console.error('Execution error:', execError);
@@ -443,8 +436,7 @@ function IotaWalletApp() {
         )}
 
         <div className="api-info">
-          <p>API Key: <code>{API_KEY.substring(0, 30)}...</code></p>
-          <p>Gas Station: <code>{GAS_STATION_URL || 'https://gas.movevm.tools'}</code></p>
+          <p>Gas Station: <code>https://gas.movevm.tools</code></p>
           <p>NFT Package: <code style={{ fontSize: '12px' }}>0xb800e7cf19a2d63d3f5f4e857d4cf20c685d4768c71b04a3d803b09b48ab53f8</code></p>
           <p>Network: <code>testnet</code></p>
           <p style={{ fontSize: '12px', marginTop: '10px' }}>

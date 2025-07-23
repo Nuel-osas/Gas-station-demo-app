@@ -8,8 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 const API_KEY = process.env.REACT_APP_SUI_API_KEY || 'YOUR_SUI_API_KEY';
-// Use relative URL to leverage proxy in development
-const GAS_STATION_URL = process.env.NODE_ENV === 'development' ? '' : 'https://gas.movevm.tools';
+// Use proxy endpoint for production CORS handling, direct proxy for development
+const GAS_STATION_URL = process.env.NODE_ENV === 'development' ? '' : '/api';
 
 function App() {
   const currentAccount = useCurrentAccount();
@@ -77,8 +77,8 @@ function App() {
       
       const rawTxBytesHex = toHex(txBytes);
       
-      // Send to gas station for sponsorship
-      const response = await fetch(`${GAS_STATION_URL}/api/sponsor`, {
+      // Send to gas station for sponsorship (via proxy in production)
+      const response = await fetch(`${GAS_STATION_URL}/sponsor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,11 +140,6 @@ function App() {
               
               setTxDigest(result.digest);
               setSponsoredTx(null);
-              
-              // Refresh the page after a delay to update balances
-              setTimeout(() => {
-                window.location.reload();
-              }, 5000);
               
             } catch (execError: any) {
               console.error('Execution error:', execError);
@@ -226,8 +221,8 @@ function App() {
       
       const rawTxBytesHex = toHex(txBytes);
       
-      // Send to gas station for sponsorship
-      const response = await fetch(`${GAS_STATION_URL}/api/sponsor`, {
+      // Send to gas station for sponsorship (via proxy in production)
+      const response = await fetch(`${GAS_STATION_URL}/sponsor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -295,11 +290,6 @@ function App() {
               setNftDescription('');
               setNftUrl('');
               setShowNftForm(false);
-              
-              // Refresh the page after a delay to update balances
-              setTimeout(() => {
-                window.location.reload();
-              }, 5000);
               
             } catch (execError: any) {
               console.error('Execution error:', execError);
@@ -471,12 +461,17 @@ function App() {
         )}
 
         <div className="api-info">
-          <p>API Key: <code>{API_KEY}</code></p>
-          <p>Gas Station: <code>{GAS_STATION_URL || 'https://gas.movevm.tools'}</code></p>
+          <p>Gas Station: <code>https://gas.movevm.tools</code></p>
           <p>NFT Package: <code style={{ fontSize: '12px' }}>0x5952e88b777eeb105168a58493f2c78ff0aa56beefa6cb9f3049c8a1b6026483</code></p>
-          <p style={{ fontSize: '12px', marginTop: '10px' }}>
-            Note: Make sure your gas station allows CORS from localhost or use a proxy.
+          <p>Network: <code>testnet</code></p>
+          <p style={{ fontSize: '12px' }}>
+            Get testnet SUI from: <a href="https://faucet.sui.io/" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
+              https://faucet.sui.io/
+            </a>
           </p>
+          <div className="cors-warning">
+            <strong>⚠️ Important:</strong> Make sure your gas station allows CORS from localhost or use a proxy.
+          </div>
         </div>
       </header>
     </div>
