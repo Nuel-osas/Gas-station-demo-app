@@ -426,7 +426,7 @@ function IotaWalletApp() {
             <h3>Transaction Successful!</h3>
             <p>Transaction Digest: {txDigest}</p>
             <a 
-              href={`https://explorer.iota.org/testnet/txblock/${txDigest}`}
+              href={`https://explorer.iota.org/txblock/${txDigest}?network=testnet`}
               target="_blank"
               rel="noopener noreferrer"
             >
